@@ -12,9 +12,9 @@ export default {
       },
       colors: {
         bg: {
-          DEFAULT: '#09090b',
-          2: '#111113',
-          3: '#18181b',
+          DEFAULT: '#06080f',
+          2: '#0f1219',
+          3: '#181b26',
         },
         surface: {
           DEFAULT: '#18181b',

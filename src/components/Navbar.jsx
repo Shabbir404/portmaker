@@ -1,16 +1,25 @@
 import { useState, useEffect } from 'react'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
-import { useNavigate, useLocation } from 'react-router-dom'
 import { LogOut, LayoutDashboard, Hammer, Menu, X } from 'lucide-react'
+import Logo from './Logo'
+
+const MARKETING_LINKS = [
+  { label: 'Features', href: '/#features' },
+  { label: 'How it works', href: '/#how-it-works' },
+  { label: 'Preview', href: '/#preview' },
+  { label: 'Pricing', href: '/pricing' },
+]
 
 export default function Navbar() {
   const { user, logout, setModal } = useApp()
   const navigate = useNavigate()
   const location = useLocation()
   const [menuOpen, setMenuOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
 
   const isActive = (path) => location.pathname === path
-  const isLanding = location.pathname === '/'
+  const isMarketing = !user || ['/', '/pricing'].includes(location.pathname)
 
   useEffect(() => {
     setMenuOpen(false)
@@ -21,6 +30,13 @@ export default function Navbar() {
     return () => { document.body.style.overflow = '' }
   }, [menuOpen])
 
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 12)
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
   const go = (path) => {
     setMenuOpen(false)
     navigate(path)
@@ -28,51 +44,43 @@ export default function Navbar() {
 
   return (
     <>
-      <nav
-        className="fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-5 sm:px-6 lg:px-8 h-16"
-        style={{
-          background: 'rgba(9,9,11,0.8)',
-          borderBottom: '1px solid rgba(255,255,255,0.06)',
-          backdropFilter: 'blur(12px)',
-          WebkitBackdropFilter: 'blur(12px)',
-        }}
-      >
-        <button
-          onClick={() => go(user ? '/dashboard' : '/')}
-          className="type-display text-[15px] font-semibold tracking-tight text-ink shrink-0"
-        >
-          Portfolio<span className="text-ink-3">Forge</span>
-        </button>
+      <nav className={`site-nav ${scrolled ? 'site-nav--scrolled' : ''}`}>
+        <Link to={user ? '/dashboard' : '/'} className="shrink-0 hover:opacity-90 transition-opacity">
+          <Logo />
+        </Link>
+
+        {isMarketing && (
+          <div className="hidden lg:flex items-center gap-1">
+            {MARKETING_LINKS.map((l) => (
+              <a key={l.href} href={l.href} className="nav-link">
+                {l.label}
+              </a>
+            ))}
+          </div>
+        )}
 
         {user && (
           <div className="hidden md:flex items-center gap-1">
-            <NavLink active={isActive('/dashboard')} onClick={() => go('/dashboard')}>
-              <LayoutDashboard size={15} strokeWidth={1.75} /> Dashboard
-            </NavLink>
-            <NavLink active={isActive('/builder')} onClick={() => go('/builder')}>
-              <Hammer size={15} strokeWidth={1.75} /> Builder
-            </NavLink>
+            <NavBtn active={isActive('/dashboard')} onClick={() => go('/dashboard')}>
+              <LayoutDashboard size={15} /> Dashboard
+            </NavBtn>
+            <NavBtn active={isActive('/builder')} onClick={() => go('/builder')}>
+              <Hammer size={15} /> Builder
+            </NavBtn>
           </div>
         )}
 
         <div className="hidden sm:flex items-center gap-2">
           {user ? (
             <>
-              <div
-                className="hidden md:flex items-center gap-2.5 px-3 py-1.5 rounded-lg"
-                style={{ border: '1px solid rgba(255,255,255,0.06)' }}
-              >
-                <div className="w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-semibold text-ink"
-                  style={{ background: 'rgba(255,255,255,0.08)' }}>
+              <div className="hidden md:flex items-center gap-2.5 px-3 py-1.5 rounded-lg glass-subtle">
+                <div className="w-7 h-7 rounded-full bg-gradient-to-br from-blue-500 to-violet-500 flex items-center justify-center text-[11px] font-bold text-white">
                   {user.name?.[0]?.toUpperCase() || 'U'}
                 </div>
                 <span className="text-sm text-ink-2 font-medium max-w-[120px] truncate">{user.name}</span>
               </div>
-              <button
-                onClick={() => { logout(); go('/') }}
-                className="btn-ghost text-xs px-3 py-2 gap-1.5"
-              >
-                <LogOut size={14} strokeWidth={1.75} />
+              <button onClick={() => { logout(); go('/') }} className="btn-ghost text-xs px-3 py-2 gap-1.5">
+                <LogOut size={14} />
                 <span className="hidden md:inline">Sign out</span>
               </button>
             </>
@@ -81,7 +89,7 @@ export default function Navbar() {
               <button onClick={() => setModal('login')} className="btn-ghost text-sm px-4 py-2">
                 Sign in
               </button>
-              <button onClick={() => setModal('signup')} className="btn-primary text-sm px-4 py-2">
+              <button onClick={() => setModal('signup')} className="btn-gradient text-sm px-4 py-2">
                 Get started
               </button>
             </>
@@ -89,101 +97,66 @@ export default function Navbar() {
         </div>
 
         <button
-          onClick={() => setMenuOpen(o => !o)}
-          className="sm:hidden flex items-center justify-center w-9 h-9 rounded-lg text-ink-2 hover:text-ink hover:bg-white/[0.04] transition-colors"
+          type="button"
+          onClick={() => setMenuOpen((o) => !o)}
+          className="sm:hidden flex items-center justify-center w-10 h-10 rounded-lg text-ink-2 hover:text-ink hover:bg-white/10 transition-colors"
           aria-label={menuOpen ? 'Close menu' : 'Open menu'}
-          aria-expanded={menuOpen}
         >
-          {menuOpen ? <X size={20} strokeWidth={1.75} /> : <Menu size={20} strokeWidth={1.75} />}
+          {menuOpen ? <X size={20} /> : <Menu size={20} />}
         </button>
       </nav>
 
       <div
-        className={`fixed inset-0 z-30 sm:hidden transition-opacity duration-200 ${menuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
-        aria-hidden={!menuOpen}
+        className={`fixed inset-0 z-30 lg:hidden transition-opacity duration-300 ${menuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
       >
-        <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={() => setMenuOpen(false)} />
-        <div
-          className={`absolute top-16 left-0 right-0 bottom-0 overflow-y-auto transition-transform duration-200 ${menuOpen ? 'translate-y-0' : '-translate-y-2'}`}
-          style={{ background: '#09090b', borderTop: '1px solid rgba(255,255,255,0.06)' }}
-        >
-          <div className="p-5 flex flex-col gap-1">
-            {user ? (
-              <>
-                <div className="flex items-center gap-3 px-4 py-3 mb-3 rounded-lg"
-                  style={{ border: '1px solid rgba(255,255,255,0.06)' }}>
-                  <div className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-semibold text-ink"
-                    style={{ background: 'rgba(255,255,255,0.08)' }}>
-                    {user.name?.[0]?.toUpperCase() || 'U'}
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-sm font-medium text-ink truncate">{user.name}</p>
-                    <p className="text-xs text-ink-3 truncate">{user.email}</p>
-                  </div>
-                </div>
-                <MobileNavLink active={isActive('/dashboard')} onClick={() => go('/dashboard')}>
-                  <LayoutDashboard size={18} strokeWidth={1.75} /> Dashboard
-                </MobileNavLink>
-                <MobileNavLink active={isActive('/builder')} onClick={() => go('/builder')}>
-                  <Hammer size={18} strokeWidth={1.75} /> Builder
-                </MobileNavLink>
-                <button
-                  onClick={() => { logout(); go('/') }}
-                  className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-ink-2 hover:text-ink hover:bg-white/[0.04] transition-colors mt-2"
-                >
-                  <LogOut size={18} strokeWidth={1.75} /> Sign out
-                </button>
-              </>
-            ) : (
-              <>
-                {isLanding && (
-                  <MobileNavLink onClick={() => { setMenuOpen(false); document.getElementById('preview')?.scrollIntoView({ behavior: 'smooth' }) }}>
-                    View example
-                  </MobileNavLink>
-                )}
-                <div className="flex flex-col gap-2 mt-4 pt-4" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-                  <button
-                    onClick={() => { setMenuOpen(false); setModal('login') }}
-                    className="btn-ghost w-full justify-center py-3"
-                  >
-                    Sign in
-                  </button>
-                  <button
-                    onClick={() => { setMenuOpen(false); setModal('signup') }}
-                    className="btn-primary w-full justify-center py-3"
-                  >
-                    Get started
-                  </button>
-                </div>
-              </>
-            )}
-          </div>
+        <div className="absolute inset-0 bg-black/75 backdrop-blur-md" onClick={() => setMenuOpen(false)} />
+        <div className={`mobile-drawer ${menuOpen ? 'mobile-drawer--open' : ''}`}>
+          {isMarketing && (
+            <div className="flex flex-col gap-1 mb-4">
+              {MARKETING_LINKS.map((l) => (
+                <a key={l.href} href={l.href} className="mobile-nav-item" onClick={() => setMenuOpen(false)}>
+                  {l.label}
+                </a>
+              ))}
+            </div>
+          )}
+          {user ? (
+            <>
+              <NavBtn active={isActive('/dashboard')} onClick={() => go('/dashboard')} className="w-full justify-start px-4 py-3">
+                <LayoutDashboard size={18} /> Dashboard
+              </NavBtn>
+              <NavBtn active={isActive('/builder')} onClick={() => go('/builder')} className="w-full justify-start px-4 py-3">
+                <Hammer size={18} /> Builder
+              </NavBtn>
+              <button
+                onClick={() => { logout(); go('/') }}
+                className="mobile-nav-item text-rose-400 mt-2"
+              >
+                <LogOut size={18} /> Sign out
+              </button>
+            </>
+          ) : (
+            <div className="flex flex-col gap-2 mt-4 pt-4 border-t border-white/10">
+              <button onClick={() => { setMenuOpen(false); setModal('login') }} className="btn-ghost w-full py-3">
+                Sign in
+              </button>
+              <button onClick={() => { setMenuOpen(false); setModal('signup') }} className="btn-gradient w-full py-3">
+                Get started free
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </>
   )
 }
 
-function NavLink({ active, onClick, children }) {
+function NavBtn({ active, onClick, children, className = '' }) {
   return (
     <button
+      type="button"
       onClick={onClick}
-      className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-        active ? 'text-ink bg-white/[0.06]' : 'text-ink-2 hover:text-ink hover:bg-white/[0.03]'
-      }`}
-    >
-      {children}
-    </button>
-  )
-}
-
-function MobileNavLink({ active, onClick, children }) {
-  return (
-    <button
-      onClick={onClick}
-      className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors w-full text-left ${
-        active ? 'text-ink bg-white/[0.06]' : 'text-ink-2 hover:text-ink hover:bg-white/[0.04]'
-      }`}
+      className={`nav-link flex items-center gap-1.5 ${active ? 'nav-link--active' : ''} ${className}`}
     >
       {children}
     </button>

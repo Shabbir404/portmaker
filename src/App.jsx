@@ -5,6 +5,7 @@ import Navbar from './components/Navbar'
 import AuthModal from './components/AuthModal'
 import { ToastList } from './components/UI'
 import Landing from './pages/Landing'
+import Pricing from './pages/Pricing'
 import Dashboard from './pages/Dashboard'
 import Builder from './pages/builder/Builder'
 import Preview from './pages/Preview'
@@ -22,6 +23,7 @@ function AppShell() {
       <Navbar />
       <Routes>
         <Route path="/" element={<Landing />} />
+        <Route path="/pricing" element={<Pricing />} />
         <Route path="/dashboard" element={
           <ProtectedRoute><Dashboard /></ProtectedRoute>
         } />
