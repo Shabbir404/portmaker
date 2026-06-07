@@ -44,7 +44,7 @@ const ROLES = [
   },
 ]
 
-export default function Step1Role() {
+export default function Step1Role({ totalSteps = 4 }) {
   const { form, updateForm, setStep } = useBuilder()
 
   const handleNext = () => {
@@ -55,7 +55,7 @@ export default function Step1Role() {
   return (
     <div className="animate-fade-up">
       <div className="mb-8">
-        <p className="text-xs font-mono text-accent-2 mb-2">// step 1 of 4</p>
+        <p className="text-xs font-mono text-accent-2 mb-2">// step 1 of {totalSteps}</p>
         <h2 className="font-syne text-3xl font-bold text-ink">What best describes you?</h2>
         <p className="text-ink-2 text-sm mt-2">
           We'll match you to the right templates and customize your form fields.
@@ -67,7 +67,7 @@ export default function Step1Role() {
           <button
             key={r.id}
             type="button"
-            onClick={() => updateForm({ role: r.id })}
+            onClick={() => updateForm({ role: r.id, selectedTheme: r.id === 'developer' ? form.selectedTheme : null })}
             className={`role-card text-left ${form.role === r.id ? 'selected' : ''}`}
             style={form.role === r.id ? { borderColor: r.color, background: `${r.color}0e`, boxShadow: `0 0 0 3px ${r.color}18` } : {}}
           >

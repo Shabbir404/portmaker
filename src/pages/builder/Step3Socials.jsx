@@ -8,7 +8,7 @@ function avatarColor(str) {
   return colors[h]
 }
 
-export default function Step3Socials() {
+export default function Step3Socials({ totalSteps = 4, isDeveloper = false }) {
   const {
     form, toggleSocial, setSocialUrl, addCustomSocial, removeCustomSocial, setStep,
   } = useBuilder()
@@ -28,7 +28,7 @@ export default function Step3Socials() {
   return (
     <div className="animate-fade-up">
       <div className="mb-8">
-        <p className="text-xs font-mono text-accent-2 mb-2">// step 3 of 4</p>
+        <p className="text-xs font-mono text-accent-2 mb-2">// step 3 of {totalSteps}</p>
         <h2 className="font-syne text-3xl font-bold text-ink">Social & Online Presence</h2>
         <p className="text-ink-2 text-sm mt-2">
           Select the platforms you want shown on your portfolio. All optional.
@@ -139,8 +139,8 @@ export default function Step3Socials() {
         <button onClick={() => setStep(2)} className="btn-ghost px-6 py-3 gap-2">
           <ChevronLeft size={16} /> Back
         </button>
-        <button onClick={() => setStep(4)} className="btn-primary px-7 py-3 gap-2">
-          Continue <ChevronRight size={16} />
+        <button type="button" onClick={() => setStep(4)} className="btn-primary px-7 py-3 gap-2">
+          {isDeveloper ? 'Choose theme' : 'Continue'} <ChevronRight size={16} />
         </button>
       </div>
     </div>

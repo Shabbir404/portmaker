@@ -128,6 +128,31 @@
     border: 1px solid rgba(255, 255, 255, 0.06);
   }
 
+  .photo-upload {
+    @apply relative rounded-xl border border-dashed transition-colors cursor-pointer;
+    border-color: rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.02);
+  }
+
+  .photo-upload:hover:not(.photo-upload--disabled) {
+    border-color: rgba(96, 165, 250, 0.35);
+    background: rgba(96, 165, 250, 0.04);
+  }
+
+  .photo-upload--has-image {
+    @apply cursor-default;
+    border-style: solid;
+  }
+
+  .photo-upload--disabled {
+    @apply opacity-50 cursor-not-allowed;
+  }
+
+  .photo-upload__preview {
+    @apply w-24 h-24 rounded-xl object-cover shrink-0;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
   .label {
     @apply block text-xs font-medium text-ink-2 mb-1.5;
   }
@@ -722,6 +747,73 @@
     bottom: 10%;
     left: 30%;
     animation-delay: -14s;
+  }
+
+  .theme-card {
+    @apply rounded-2xl overflow-hidden transition-all duration-300 cursor-pointer text-left w-full;
+    background: rgba(255, 255, 255, 0.03);
+    border: 2px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .theme-card:hover {
+    border-color: rgba(255, 255, 255, 0.16);
+    transform: translateY(-2px);
+  }
+
+  .theme-card--selected {
+    border-color: rgba(79, 140, 255, 0.55);
+    box-shadow: 0 0 0 3px rgba(79, 140, 255, 0.15), 0 16px 40px rgba(0, 0, 0, 0.35);
+  }
+
+  .theme-card__preview {
+    height: 140px;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .theme-card__mock {
+    width: 100%;
+    max-width: 200px;
+    padding: .75rem;
+    border-radius: 12px;
+    background: rgba(0, 0, 0, 0.35);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .theme-card__bar {
+    height: 4px;
+    border-radius: 2px;
+    width: 40%;
+    margin-bottom: .5rem;
+  }
+
+  .theme-card__line {
+    height: 3px;
+    border-radius: 2px;
+    background: rgba(255, 255, 255, 0.15);
+    margin-bottom: .35rem;
+  }
+
+  .theme-card__line--short {
+    width: 50%;
+  }
+
+  .theme-card__chip {
+    width: 20px;
+    height: 8px;
+    border-radius: 4px;
+    border: 1px solid;
+  }
+
+  .theme-card__body {
+    padding: 1rem 1.25rem 1.25rem;
+  }
+
+  .theme-card__check {
+    @apply w-7 h-7 rounded-full flex items-center justify-center shrink-0 text-white;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
   }
 }
 

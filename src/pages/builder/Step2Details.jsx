@@ -1,10 +1,10 @@
 import { useBuilder } from '../../context/BuilderContext'
-import { Input, Textarea, SkillsInput, Divider } from '../../components/UI'
+import { Input, Textarea, SkillsInput, PhotoUpload } from '../../components/UI'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 
 const DESIGN_TOOLS = ['Figma', 'Adobe XD', 'Sketch', 'Illustrator', 'Photoshop', 'InVision', 'Framer', 'Canva', 'Blender', 'After Effects']
 
-export default function Step2Details() {
+export default function Step2Details({ totalSteps = 4 }) {
   const {
     form, updateForm, skipField, unskipField, isSkipped,
     addSkill, removeSkill, addDesignTool, removeDesignTool,
@@ -16,7 +16,7 @@ export default function Step2Details() {
   return (
     <div className="animate-fade-up">
       <div className="mb-8">
-        <p className="text-xs font-mono text-accent-2 mb-2">// step 2 of 4</p>
+        <p className="text-xs font-mono text-accent-2 mb-2">// step 2 of {totalSteps}</p>
         <h2 className="font-syne text-3xl font-bold text-ink">
           {form.role === 'developer' && 'Developer Details'}
           {form.role === 'designer' && 'Designer Details'}
@@ -65,10 +65,17 @@ export default function Step2Details() {
             skip skipped={isSkipped('bio')} onSkip={() => skipField('bio')} onUnskip={() => unskipField('bio')}
             value={form.bio} onChange={u('bio')} />
 
-          <Input label="Profile Photo URL" placeholder="https://your-photo.com/avatar.jpg"
-            skip skipped={isSkipped('avatar')} onSkip={() => skipField('avatar')} onUnskip={() => unskipField('avatar')}
-            value={form.avatar} onChange={u('avatar')}
-            hint="Paste a direct image URL. Works with LinkedIn photos, GitHub avatars, etc." />
+          <PhotoUpload
+            label="Profile Photo"
+            value={form.avatar}
+            onChange={(dataUrl) => updateForm({ avatar: dataUrl })}
+            onClear={() => updateForm({ avatar: '' })}
+            skip
+            skipped={isSkipped('avatar')}
+            onSkip={() => skipField('avatar')}
+            onUnskip={() => unskipField('avatar')}
+            hint="JPG, PNG, WebP or GIF · max 2 MB · square photos work best"
+          />
         </div>
 
         {/* ── DEVELOPER ── */}

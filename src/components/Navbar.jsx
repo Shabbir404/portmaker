@@ -5,11 +5,14 @@ import { LogOut, LayoutDashboard, Hammer, Menu, X } from 'lucide-react'
 import Logo from './Logo'
 
 const MARKETING_LINKS = [
+  { label: 'Home', href: '/' },
   { label: 'Features', href: '/#features' },
   { label: 'How it works', href: '/#how-it-works' },
   { label: 'Preview', href: '/#preview' },
   { label: 'Pricing', href: '/pricing' },
 ]
+
+const APP_ROUTES = ['/builder', '/dashboard', '/preview']
 
 export default function Navbar() {
   const { user, logout, setModal } = useApp()
@@ -19,7 +22,10 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
 
   const isActive = (path) => location.pathname === path
-  const isMarketing = !user || ['/', '/pricing'].includes(location.pathname)
+  const showMarketingLinks =
+    !user ||
+    ['/', '/pricing'].includes(location.pathname) ||
+    APP_ROUTES.includes(location.pathname)
 
   useEffect(() => {
     setMenuOpen(false)
@@ -49,7 +55,7 @@ export default function Navbar() {
           <Logo />
         </Link>
 
-        {isMarketing && (
+        {showMarketingLinks && (
           <div className="hidden lg:flex items-center gap-1">
             {MARKETING_LINKS.map((l) => (
               <a key={l.href} href={l.href} className="nav-link">
@@ -111,7 +117,7 @@ export default function Navbar() {
       >
         <div className="absolute inset-0 bg-black/75 backdrop-blur-md" onClick={() => setMenuOpen(false)} />
         <div className={`mobile-drawer ${menuOpen ? 'mobile-drawer--open' : ''}`}>
-          {isMarketing && (
+          {showMarketingLinks && (
             <div className="flex flex-col gap-1 mb-4">
               {MARKETING_LINKS.map((l) => (
                 <a key={l.href} href={l.href} className="mobile-nav-item" onClick={() => setMenuOpen(false)}>

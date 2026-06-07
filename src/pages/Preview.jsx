@@ -4,6 +4,7 @@ import { useApp } from '../context/AppContext'
 import { useNavigate } from 'react-router-dom'
 import { Monitor, Tablet, Smartphone, Download, Rocket, ArrowLeft, RotateCcw, ExternalLink } from 'lucide-react'
 import { Modal, Alert, Spinner } from '../components/UI'
+import { getThemeById } from '../templates/registry'
 import JSZip from 'jszip'
 
 const SIZES = [
@@ -72,7 +73,12 @@ export default function Preview() {
               <h2 className="font-syne font-bold text-ink text-lg leading-tight">
                 {form.name || 'Portfolio'} Preview
               </h2>
-              <p className="text-xs text-ink-3 capitalize">{form.role} · {form.themePreference} theme</p>
+              <p className="text-xs text-ink-3 capitalize">
+                {form.role}
+                {form.role === 'developer' && form.selectedTheme
+                  ? ` · ${getThemeById('developer', form.selectedTheme)?.name || form.selectedTheme} theme`
+                  : form.themePreference ? ` · ${form.themePreference} theme` : ''}
+              </p>
             </div>
           </div>
 

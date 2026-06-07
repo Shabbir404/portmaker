@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { X, Eye, EyeOff } from 'lucide-react'
+import { useState, useRef } from 'react'
+import { X, Eye, EyeOff, Upload, ImageIcon, Trash2 } from 'lucide-react'
 
 // ─── Input ───
 export function Input({ label, skip, skipped, onSkip, onUnskip, hint, ...props }) {
@@ -30,6 +30,132 @@ export function Input({ label, skip, skipped, onSkip, onUnskip, hint, ...props }
         <input className="input-field" {...props} />
       )}
       {hint && !skipped && <p className="text-xs text-ink-3 mt-0.5">{hint}</p>}
+    </div>
+  )
+}
+
+const PHOTO_MAX_BYTES = 2 * 1024 * 1024
+const PHOTO_ACCEPT = 'image/jpeg,image/png,image/webp,image/gif'
+
+// ─── Photo upload ───
+export function PhotoUpload({
+  label,
+  value,
+  onChange,
+  onClear,
+  skip,
+  skipped,
+  onSkip,
+  onUnskip,
+  hint = 'JPG, PNG, WebP or GIF · max 2 MB',
+}) {
+  const inputRef = useRef(null)
+  const [dragOver, setDragOver] = useState(false)
+
+  const handleFile = (file) => {
+    if (!file || skipped) return
+    if (!file.type.startsWith('image/')) {
+      alert('Please upload an image file (JPG, PNG, WebP, or GIF).')
+      return
+    }
+    if (file.size > PHOTO_MAX_BYTES) {
+      alert('Image must be under 2 MB.')
+      return
+    }
+    const reader = new FileReader()
+    reader.onload = (e) => onChange(e.target.result)
+    reader.readAsDataURL(file)
+  }
+
+  const onInputChange = (e) => {
+    const file = e.target.files?.[0]
+    if (file) handleFile(file)
+    e.target.value = ''
+  }
+
+  const onDrop = (e) => {
+    e.preventDefault()
+    setDragOver(false)
+    if (skipped) return
+    const file = e.dataTransfer.files?.[0]
+    if (file) handleFile(file)
+  }
+
+  return (
+    <div className="flex flex-col gap-1.5">
+      {label && (
+        <div className="flex items-center justify-between">
+          <label className="label">{label}</label>
+          {skip && !skipped && (
+            <button type="button" onClick={onSkip}
+              className="text-xs text-ink-3 hover:text-ink-2 transition underline underline-offset-2">
+              Prefer not to
+            </button>
+          )}
+          {skip && skipped && (
+            <button type="button" onClick={onUnskip}
+              className="text-xs text-accent-2 hover:text-accent transition">
+              + Add this
+            </button>
+          )}
+        </div>
+      )}
+
+      {skipped ? (
+        <div className="input-field text-ink-3 italic cursor-not-allowed opacity-50 flex items-center gap-2 min-h-[120px]">
+          Skipped
+        </div>
+      ) : value ? (
+        <div className="photo-upload photo-upload--has-image p-4">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+            <img src={value} alt="Profile preview" className="photo-upload__preview" />
+            <div className="flex flex-col gap-2 flex-1 min-w-0">
+              <p className="text-sm text-ink font-medium">Photo uploaded</p>
+              <p className="text-xs text-ink-3">This will appear on your portfolio avatar area.</p>
+              <div className="flex flex-wrap gap-2 mt-1">
+                <button type="button" onClick={() => inputRef.current?.click()} className="btn-ghost text-xs px-3 py-2 gap-1.5">
+                  <Upload size={14} /> Change photo
+                </button>
+                <button type="button" onClick={onClear} className="btn-ghost text-xs px-3 py-2 gap-1.5 text-rose-forge hover:text-rose-400">
+                  <Trash2 size={14} /> Remove
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') inputRef.current?.click() }}
+          onClick={() => inputRef.current?.click()}
+          onDragOver={(e) => { e.preventDefault(); setDragOver(true) }}
+          onDragLeave={() => setDragOver(false)}
+          onDrop={onDrop}
+          className={`photo-upload p-8 flex flex-col items-center justify-center text-center gap-3 min-h-[140px] ${
+            dragOver ? 'border-accent/40 bg-accent/5' : ''
+          }`}
+        >
+          <div className="w-12 h-12 rounded-xl bg-white/[0.04] border border-white/10 flex items-center justify-center text-ink-3">
+            <ImageIcon size={22} />
+          </div>
+          <div>
+            <p className="text-sm text-ink font-medium">Click to upload or drag & drop</p>
+            <p className="text-xs text-ink-3 mt-1">{hint}</p>
+          </div>
+          <span className="btn-ghost text-xs px-4 py-2 gap-1.5 pointer-events-none">
+            <Upload size={14} /> Choose photo
+          </span>
+        </div>
+      )}
+
+      <input
+        ref={inputRef}
+        type="file"
+        accept={PHOTO_ACCEPT}
+        className="hidden"
+        onChange={onInputChange}
+      />
     </div>
   )
 }

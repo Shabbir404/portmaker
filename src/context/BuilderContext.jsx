@@ -92,11 +92,13 @@ const initForm = {
   socialUrls: {},        // { github: 'https://...', ... }
   customSocials: [],     // [{ name, url }]
 
-  // Step 4 — finalize
+  // Step 4 — theme (developer)
+  selectedTheme: null,
+
+  // Step 4/5 — finalize
   themePreference: 'auto',
   adminUser: 'admin',
   adminPass: '',
-  geminiKey: '',
 
   // Skipped fields
   skipped: {},
