@@ -2,8 +2,10 @@ import { useState } from 'react'
 import { useBuilder } from '../context/BuilderContext'
 import { useApp } from '../context/AppContext'
 import { useNavigate } from 'react-router-dom'
-import { Monitor, Tablet, Smartphone, Download, Rocket, ArrowLeft, RotateCcw, ExternalLink } from 'lucide-react'
+import { Monitor, Tablet, Smartphone, Download, Rocket, ArrowLeft, RotateCcw, ExternalLink, Maximize2 } from 'lucide-react'
 import { Modal, Alert, Spinner } from '../components/UI'
+import FullScreenPreview from '../components/FullScreenPreview'
+import PreviewIframe from '../components/PreviewIframe'
 import { getThemeById } from '../templates/registry'
 import JSZip from 'jszip'
 
@@ -19,6 +21,7 @@ export default function Preview() {
   const navigate = useNavigate()
   const [size, setSize] = useState('desktop')
   const [showHostModal, setShowHostModal] = useState(false)
+  const [showFullScreen, setShowFullScreen] = useState(false)
   const [downloading, setDownloading] = useState(false)
 
   /* ── Generating state ── */
@@ -97,6 +100,16 @@ export default function Preview() {
               ))}
             </div>
 
+            <button
+              type="button"
+              onClick={() => setShowFullScreen(true)}
+              className="btn-ghost px-4 py-2.5 text-sm gap-1.5"
+              title="Open full-size preview"
+            >
+              <Maximize2 size={14} />
+              <span className="hidden sm:inline">Full screen</span>
+            </button>
+
             <button onClick={handleDownload} disabled={downloading}
               className="btn-ghost px-4 py-2.5 text-sm gap-1.5">
               {downloading ? <Spinner size={14} /> : <Download size={14} />}
@@ -125,11 +138,15 @@ export default function Preview() {
               boxShadow: '0 24px 60px rgba(0,0,0,0.5)',
               ...(size !== 'desktop' ? { border: '6px solid rgba(255,255,255,0.08)' } : {}),
             }}>
-            <iframe
-              srcDoc={generatedHTML}
-              sandbox="allow-scripts allow-same-origin"
+            <PreviewIframe
+              html={generatedHTML}
+              title={`${form.name || 'Portfolio'} preview`}
               className="w-full block transition-all duration-300"
-              style={{ height: size === 'mobile' ? '780px' : '700px', background: '#060b14' }}
+              style={{
+                height: size === 'desktop' ? 'calc(100vh - 220px)' : size === 'mobile' ? '780px' : '700px',
+                minHeight: size === 'desktop' ? '520px' : undefined,
+                background: '#060b14',
+              }}
             />
           </div>
         </div>
@@ -157,6 +174,14 @@ export default function Preview() {
 
       {/* Deploy modal */}
       {showHostModal && <HostModal form={form} onClose={() => setShowHostModal(false)} onDownload={handleDownload} />}
+
+      {showFullScreen && (
+        <FullScreenPreview
+          html={generatedHTML}
+          title={`${form.name || 'Portfolio'} — live preview`}
+          onClose={() => setShowFullScreen(false)}
+        />
+      )}
     </div>
   )
 }

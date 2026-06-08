@@ -1,5 +1,6 @@
 import { loadDeveloperThemeHtml } from '../templates/themeLoader.js'
 import { personalizeDevTemplate } from './personalizeDevTemplate.js'
+import { injectPortfolioNavFix } from '../utils/portfolioNavFix.js'
 
 function escapeHtml(str = '') {
   return String(str)
@@ -199,9 +200,9 @@ export async function generatePortfolio(form) {
   if (form.role === 'developer' && form.selectedTheme) {
     const raw = await loadThemeTemplate('developer', form.selectedTheme)
     const personalized = personalizeDevTemplate(raw, form, form.selectedTheme)
-    return renderTemplate(personalized, form)
+    return injectPortfolioNavFix(renderTemplate(personalized, form))
   }
-  return renderFallbackHTML(form)
+  return injectPortfolioNavFix(renderFallbackHTML(form))
 }
 
 /** Fallback when no theme file is selected (non-developer roles) */
