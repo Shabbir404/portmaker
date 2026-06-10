@@ -1,5 +1,4 @@
-import { useApp } from '../context/AppContext'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import {
   ArrowRight, Zap, Shield, Download, Globe, Check,
   Code2, Palette, Stethoscope, GraduationCap, Sparkles,
@@ -29,7 +28,8 @@ const STEPS = [
 ]
 
 export default function Landing() {
-  const { setModal } = useApp()
+  const navigate = useNavigate()
+  const goSignup = () => navigate('/login?mode=signup')
 
   return (
     <div className="min-h-screen pt-16 overflow-x-hidden page-mesh">
@@ -56,7 +56,7 @@ export default function Landing() {
             </p>
 
             <div className="flex flex-col xs:flex-row items-stretch xs:items-center justify-center gap-3 mb-8 animate-fade-up">
-              <button onClick={() => setModal('signup')} className="btn-gradient px-7 py-3.5 text-sm sm:text-base min-h-[48px] w-full xs:w-auto">
+              <button onClick={() => goSignup()} className="btn-gradient px-7 py-3.5 text-sm sm:text-base min-h-[48px] w-full xs:w-auto">
                 Start building free
                 <ArrowRight size={18} />
               </button>
@@ -207,7 +207,7 @@ export default function Landing() {
                 ))}
               </ul>
               <div className="flex flex-col xs:flex-row gap-3">
-                <button onClick={() => setModal('signup')} className="btn-gradient px-6 py-3 min-h-[44px]">
+                <button onClick={() => goSignup()} className="btn-gradient px-6 py-3 min-h-[44px]">
                   Create yours
                   <ArrowRight size={16} />
                 </button>
@@ -235,7 +235,7 @@ export default function Landing() {
             <p className="text-ink-2 mb-8 max-w-md mx-auto relative">
               Join thousands of creators who ship portfolios with PortfolioForge.
             </p>
-            <button onClick={() => setModal('signup')} className="btn-gradient px-8 py-3.5 relative">
+            <button onClick={() => goSignup()} className="btn-gradient px-8 py-3.5 relative">
               Get started — it&apos;s free
               <ArrowRight size={18} />
             </button>

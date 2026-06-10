@@ -1,6 +1,8 @@
-import { loadDeveloperThemeHtml } from '../templates/themeLoader.js'
+import { loadThemeHtml } from '../templates/themeLoader.js'
 import { personalizeDevTemplate } from './personalizeDevTemplate.js'
+import { personalizeDesignerTemplate } from './personalizeDesignerTemplate.js'
 import { injectPortfolioNavFix } from '../utils/portfolioNavFix.js'
+import { builderProjectsToTemplateSeed } from '../lib/builderProjects.js'
 
 function escapeHtml(str = '') {
   return String(str)
@@ -80,18 +82,26 @@ function buildContactBlock(form, accent) {
 function buildAdminScript(form, accent) {
   const user = escapeHtml(form.adminUser || 'admin')
   const pass = escapeHtml(form.adminPass || 'admin123')
+  const seed = JSON.stringify(builderProjectsToTemplateSeed(form.projects, form.role))
+    .replace(/</g, '\\u003c')
   return `
 <script>
 const ADMIN_USER = '${user}';
 const ADMIN_PASS = '${pass}';
 const ACCENT = '${accent}';
+const PF_SEED = ${seed};
+try{localStorage.setItem('pf_projects',JSON.stringify(PF_SEED));}catch(_e){}
+function pfGetProjects(){
+  try{var s=localStorage.getItem('pf_projects');if(s){var p=JSON.parse(s);if(Array.isArray(p)&&p.length)return p}}catch(_x){}
+  return(Array.isArray(PF_SEED)&&PF_SEED.length)?PF_SEED:[];
+}
 function renderProjects() {
-  const projects = JSON.parse(localStorage.getItem('pf_projects') || '[]');
+  const projects = pfGetProjects();
   const grid = document.getElementById('projects-grid');
   if (!grid || !projects.length) return;
   grid.innerHTML = projects.map(p => \`
     <article class="pf-project">
-      \${p.img ? \`<img src="\${p.img}" alt="" class="pf-project-img">\` : \`<div class="pf-project-img pf-project-img--placeholder"></div>\`}
+      \${(p.img1||p.img) ? \`<img src="\${p.img1||p.img}" alt="" class="pf-project-img">\` : \`<div class="pf-project-img pf-project-img--placeholder"></div>\`}
       <div class="pf-project-body">
         <h3>\${p.title}</h3>
         <p>\${p.desc || ''}</p>
@@ -192,14 +202,18 @@ export function renderTemplate(html, form) {
 }
 
 export async function loadThemeTemplate(role, themeId) {
-  if (role !== 'developer') throw new Error(`No templates for role "${role}"`)
-  return loadDeveloperThemeHtml(themeId)
+  return loadThemeHtml(role, themeId)
 }
 
 export async function generatePortfolio(form) {
   if (form.role === 'developer' && form.selectedTheme) {
     const raw = await loadThemeTemplate('developer', form.selectedTheme)
     const personalized = personalizeDevTemplate(raw, form, form.selectedTheme)
+    return injectPortfolioNavFix(renderTemplate(personalized, form))
+  }
+  if (form.role === 'designer' && form.selectedTheme) {
+    const raw = await loadThemeTemplate('designer', form.selectedTheme)
+    const personalized = personalizeDesignerTemplate(raw, form, form.selectedTheme)
     return injectPortfolioNavFix(renderTemplate(personalized, form))
   }
   return injectPortfolioNavFix(renderFallbackHTML(form))

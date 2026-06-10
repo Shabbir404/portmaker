@@ -854,6 +854,428 @@
   .fs-preview__iframe {
     @apply absolute inset-0 w-full h-full border-0 block;
   }
+
+  /* ─── Admin panel ─── */
+  .admin-page {
+    @apply flex min-h-[calc(100vh-64px)] pt-16;
+    background: #06060a;
+  }
+
+  .admin-sidebar {
+    @apply w-full md:w-[280px] shrink-0 flex flex-col border-r border-white/[0.06];
+    background: rgba(255, 255, 255, 0.02);
+    min-height: calc(100vh - 64px);
+  }
+
+  .admin-sidebar__brand {
+    @apply flex items-center gap-3 px-5 py-6 border-b border-white/[0.06];
+  }
+
+  .admin-sidebar__label {
+    @apply text-[10px] font-mono uppercase tracking-widest text-ink-3;
+  }
+
+  .admin-sidebar__title {
+    @apply text-sm font-semibold text-ink;
+  }
+
+  .admin-sidebar__section {
+    @apply px-5 pt-5 pb-2 text-[10px] font-semibold uppercase tracking-widest text-ink-3;
+  }
+
+  .admin-sidebar__nav {
+    @apply flex-1 px-3 flex flex-col gap-1 overflow-y-auto;
+  }
+
+  .admin-sidebar__item {
+    @apply w-full flex items-center gap-3 px-3 py-3 rounded-xl text-left transition-all;
+    border: 1px solid transparent;
+    color: #a1a1aa;
+  }
+
+  .admin-sidebar__item:hover {
+    background: rgba(255, 255, 255, 0.04);
+    color: #fafafa;
+  }
+
+  .admin-sidebar__item--active {
+    background: rgba(79, 140, 255, 0.1);
+    border-color: rgba(79, 140, 255, 0.22);
+    color: #fafafa;
+  }
+
+  .admin-sidebar__emoji {
+    @apply text-lg w-9 h-9 rounded-lg flex items-center justify-center shrink-0;
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  .admin-sidebar__item-text {
+    @apply flex flex-col min-w-0 flex-1;
+  }
+
+  .admin-sidebar__item-name {
+    @apply text-sm font-medium truncate;
+  }
+
+  .admin-sidebar__item-slug {
+    @apply text-[10px] font-mono text-ink-3 truncate;
+  }
+
+  .admin-sidebar__footer {
+    @apply p-4 border-t border-white/[0.06] flex flex-col gap-2;
+  }
+
+  .admin-sidebar__action {
+    @apply w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: #a1a1aa;
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  .admin-sidebar__action:hover {
+    color: #fafafa;
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  .admin-sidebar__action--primary {
+    color: #fff;
+    background: rgba(79, 140, 255, 0.2);
+    border-color: rgba(79, 140, 255, 0.35);
+  }
+
+  .admin-sidebar__action--primary:hover {
+    background: rgba(79, 140, 255, 0.3);
+  }
+
+  .admin-sidebar__loading,
+  .admin-sidebar__empty {
+    @apply px-3 py-4 text-xs text-ink-3 text-center;
+  }
+
+  .admin-main {
+    @apply flex-1 min-w-0 flex flex-col;
+  }
+
+  .admin-header {
+    @apply flex flex-col sm:flex-row sm:items-start justify-between gap-4 px-6 md:px-8 py-6 border-b border-white/[0.06];
+  }
+
+  .admin-header__eyebrow {
+    @apply text-[10px] font-mono uppercase tracking-widest text-accent-2 mb-1;
+  }
+
+  .admin-header__title {
+    @apply font-syne text-2xl md:text-3xl font-bold text-ink;
+  }
+
+  .admin-header__meta {
+    @apply text-sm text-ink-3 mt-1 flex items-center gap-2 flex-wrap;
+  }
+
+  .admin-badge-live {
+    @apply text-[10px] px-2 py-0.5 rounded-full font-medium;
+    background: rgba(34, 211, 160, 0.12);
+    color: #22d3a0;
+    border: 1px solid rgba(34, 211, 160, 0.25);
+  }
+
+  .admin-header__actions {
+    @apply flex items-center gap-2 flex-wrap shrink-0;
+  }
+
+  .admin-tabs {
+    @apply flex gap-1 px-6 md:px-8 pt-4 border-b border-white/[0.06];
+  }
+
+  .admin-tab {
+    @apply flex items-center gap-2 px-4 py-3 text-sm font-medium transition-colors rounded-t-lg;
+    color: #71717a;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+  }
+
+  .admin-tab:hover {
+    color: #d4d4d8;
+  }
+
+  .admin-tab--active {
+    color: #fafafa;
+    border-bottom-color: #4f8cff;
+  }
+
+  .admin-content {
+    @apply flex-1 px-6 md:px-8 py-6 overflow-y-auto;
+  }
+
+  .admin-welcome {
+    @apply flex flex-col items-center justify-center text-center flex-1 px-6 py-20;
+  }
+
+  .admin-welcome__icon {
+    @apply w-16 h-16 rounded-2xl flex items-center justify-center mb-6 text-accent;
+    background: rgba(79, 140, 255, 0.1);
+    border: 1px solid rgba(79, 140, 255, 0.2);
+  }
+
+  .admin-welcome h1 {
+    @apply font-syne text-2xl font-bold text-ink mb-2;
+  }
+
+  .admin-welcome p {
+    @apply text-ink-2 text-sm max-w-md;
+  }
+
+  .admin-setup-banner {
+    @apply max-w-lg mx-auto mt-20 p-8 rounded-2xl text-center;
+    background: rgba(251, 191, 36, 0.08);
+    border: 1px solid rgba(251, 191, 36, 0.2);
+  }
+
+  .admin-projects__toolbar {
+    @apply flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6;
+  }
+
+  .admin-projects__title {
+    @apply font-syne text-xl font-bold text-ink;
+  }
+
+  .admin-projects__sub {
+    @apply text-xs text-ink-3 mt-0.5;
+  }
+
+  .admin-projects__loading {
+    @apply flex justify-center py-16;
+  }
+
+  .admin-empty-card {
+    @apply rounded-2xl p-12 text-center;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px dashed rgba(255, 255, 255, 0.1);
+  }
+
+  .admin-empty-card__icon {
+    @apply text-4xl mb-4;
+  }
+
+  .admin-empty-card h3 {
+    @apply font-semibold text-ink mb-2;
+  }
+
+  .admin-empty-card p {
+    @apply text-sm text-ink-3 mb-2;
+  }
+
+  .admin-project-list {
+    @apply flex flex-col gap-3;
+  }
+
+  .admin-project-row {
+    @apply flex items-center gap-3 p-4 rounded-2xl transition-colors;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .admin-project-row:hover {
+    border-color: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  .admin-project-row__grip {
+    @apply text-ink-4 hidden sm:block;
+  }
+
+  .admin-project-row__order {
+    @apply text-xs font-mono text-ink-3 w-6 shrink-0;
+  }
+
+  .admin-project-row__thumb {
+    @apply w-16 h-16 rounded-xl object-cover shrink-0 border border-white/10;
+  }
+
+  .admin-project-row__thumb--empty {
+    @apply flex items-center justify-center text-[10px] font-mono text-ink-4;
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  .admin-project-row__body {
+    @apply flex-1 min-w-0;
+  }
+
+  .admin-project-row__body h3 {
+    @apply font-semibold text-ink truncate;
+  }
+
+  .admin-project-row__meta {
+    @apply text-xs text-ink-3 mt-0.5;
+  }
+
+  .admin-project-row__desc {
+    @apply text-xs text-ink-2 mt-1 line-clamp-2;
+  }
+
+  .admin-project-row__actions {
+    @apply flex items-center gap-1 shrink-0;
+  }
+
+  .admin-icon-btn {
+    @apply p-2 rounded-lg transition-colors text-ink-3;
+    border: 1px solid transparent;
+  }
+
+  .admin-icon-btn:hover:not(:disabled) {
+    color: #fafafa;
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.08);
+  }
+
+  .admin-icon-btn:disabled {
+    @apply opacity-30 cursor-not-allowed;
+  }
+
+  .admin-icon-btn--danger:hover:not(:disabled) {
+    color: #fca5a5;
+    background: rgba(244, 63, 94, 0.1);
+    border-color: rgba(244, 63, 94, 0.2);
+  }
+
+  .admin-upload-zone {
+    @apply flex items-center justify-center gap-2 py-8 rounded-xl cursor-pointer transition-colors;
+    border: 1px dashed rgba(255, 255, 255, 0.12);
+    color: #a1a1aa;
+  }
+
+  .admin-upload-zone:hover {
+    border-color: rgba(79, 140, 255, 0.35);
+    background: rgba(79, 140, 255, 0.05);
+    color: #d4d4d8;
+  }
+
+  .admin-panel-empty {
+    @apply py-16 text-center text-sm text-ink-3;
+  }
+
+  .admin-overview {
+    @apply max-w-2xl;
+  }
+
+  .admin-stat-grid {
+    @apply grid grid-cols-2 gap-4;
+  }
+
+  .admin-stat {
+    @apply rounded-xl p-4;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .admin-stat p {
+    @apply text-[10px] uppercase tracking-widest text-ink-3 mb-1;
+  }
+
+  .admin-stat strong {
+    @apply text-sm text-ink;
+  }
+
+  .auth-page {
+    @apply min-h-screen flex items-center justify-center px-5 py-12;
+    background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(37, 99, 235, 0.12), transparent),
+      #06080f;
+  }
+
+  .auth-page__card {
+    @apply w-full max-w-md rounded-2xl p-8 sm:p-10;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(20px);
+  }
+
+  .auth-page__logo {
+    @apply flex justify-center mb-8;
+  }
+
+  .auth-form__header {
+    @apply text-center mb-6;
+  }
+
+  .auth-form__title {
+    @apply type-display text-2xl font-bold text-ink mb-2;
+  }
+
+  .auth-form__sub {
+    @apply text-sm text-ink-3;
+  }
+
+  .auth-google-btn {
+    @apply w-full flex items-center justify-center gap-3 py-3 rounded-lg text-sm font-medium text-ink transition-all duration-200;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+  }
+
+  .auth-google-btn:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.18);
+  }
+
+  .auth-google-btn:disabled {
+    @apply opacity-60 cursor-not-allowed;
+  }
+
+  .auth-divider {
+    @apply flex items-center gap-3 my-5;
+  }
+
+  .auth-divider::before,
+  .auth-divider::after {
+    content: '';
+    @apply flex-1 h-px;
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .auth-divider span {
+    @apply text-xs text-ink-3 uppercase tracking-wider;
+  }
+
+  .auth-tabs {
+    @apply flex gap-1 p-1 rounded-lg mb-4;
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  .auth-tab {
+    @apply flex-1 py-2 text-sm font-medium rounded-md text-ink-3 transition-colors;
+  }
+
+  .auth-tab--active {
+    @apply text-ink;
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .auth-error {
+    @apply text-sm text-rose-300 rounded-lg px-4 py-3 mb-4;
+    background: rgba(244, 63, 94, 0.1);
+    border: 1px solid rgba(244, 63, 94, 0.2);
+  }
+
+  .auth-fields {
+    @apply space-y-4;
+  }
+
+  .auth-name-row {
+    @apply grid grid-cols-2 gap-3;
+  }
+
+  @media (max-width: 767px) {
+    .admin-page {
+      @apply flex-col;
+    }
+
+    .admin-sidebar {
+      @apply w-full min-h-0 border-r-0 border-b border-white/[0.06];
+    }
+
+    .admin-sidebar__nav {
+      @apply max-h-48;
+    }
+  }
 }
 
 @layer utilities {

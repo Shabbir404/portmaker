@@ -132,6 +132,8 @@ function patchRoleLabels(html, roleTag) {
   return out
 }
 
+import { injectBuilderProjects } from './injectProjects.js'
+
 /**
  * Replaces demo profile content (Alex Chen, etc.) with builder form data
  * for HTML templates in src/templates/developer/{theme-id}/
@@ -225,6 +227,7 @@ export function personalizeDevTemplate(html, form, themeId) {
 
   out = injectSkills(out, form.skills, themeId)
   out = injectAvatar(out, form)
+  out = injectBuilderProjects(out, form, themeId)
 
   return out
 }

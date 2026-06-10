@@ -1,5 +1,4 @@
-import { Link } from 'react-router-dom'
-import { useApp } from '../context/AppContext'
+import { Link, useNavigate } from 'react-router-dom'
 import { Check, ArrowRight, Sparkles } from 'lucide-react'
 import Footer from '../components/Footer'
 
@@ -53,7 +52,7 @@ const PLANS = [
 ]
 
 export default function Pricing() {
-  const { setModal } = useApp()
+  const navigate = useNavigate()
 
   return (
     <div className="min-h-screen pt-16 overflow-x-hidden page-mesh">
@@ -98,7 +97,7 @@ export default function Pricing() {
                   ))}
                 </ul>
                 <button
-                  onClick={() => setModal(plan.name === 'Team' ? 'login' : 'signup')}
+                  onClick={() => navigate(plan.name === 'Team' ? '/login' : '/login?mode=signup')}
                   className={plan.featured ? 'btn-gradient w-full py-3' : 'btn-ghost w-full py-3 hover:border-accent/40'}
                 >
                   {plan.cta}

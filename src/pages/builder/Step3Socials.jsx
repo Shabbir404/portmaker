@@ -8,7 +8,7 @@ function avatarColor(str) {
   return colors[h]
 }
 
-export default function Step3Socials({ totalSteps = 4, isDeveloper = false }) {
+export default function Step3Socials({ totalSteps = 4 }) {
   const {
     form, toggleSocial, setSocialUrl, addCustomSocial, removeCustomSocial, setStep,
   } = useBuilder()
@@ -140,7 +140,7 @@ export default function Step3Socials({ totalSteps = 4, isDeveloper = false }) {
           <ChevronLeft size={16} /> Back
         </button>
         <button type="button" onClick={() => setStep(4)} className="btn-primary px-7 py-3 gap-2">
-          {isDeveloper ? 'Choose theme' : 'Continue'} <ChevronRight size={16} />
+          {(form.role === 'developer' || form.role === 'designer') ? 'Add projects' : 'Continue'} <ChevronRight size={16} />
         </button>
       </div>
     </div>

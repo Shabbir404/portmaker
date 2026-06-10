@@ -1,4 +1,5 @@
 import { createContext, useContext, useState } from 'react'
+import { BUILDER_PROJECT_LIMIT, emptyBuilderProject } from '../lib/builderProjects.js'
 
 const BuilderContext = createContext(null)
 
@@ -92,7 +93,10 @@ const initForm = {
   socialUrls: {},        // { github: 'https://...', ... }
   customSocials: [],     // [{ name, url }]
 
-  // Step 4 — theme (developer)
+  // Step 4 — projects (developer / designer, max 3)
+  projects: [],
+
+  // Step 5 — theme (developer / designer)
   selectedTheme: null,
 
   // Step 4/5 — finalize
@@ -129,6 +133,27 @@ export function BuilderProvider({ children }) {
   const addDesignTool = (tool) => setForm(f => ({ ...f, designTools: f.designTools.includes(tool) ? f.designTools : [...f.designTools, tool] }))
   const removeDesignTool = (tool) => setForm(f => ({ ...f, designTools: f.designTools.filter(s => s !== tool) }))
 
+  const addProject = () => setForm((f) => {
+    const list = f.projects || []
+    if (list.length >= BUILDER_PROJECT_LIMIT) return f
+    return {
+      ...f,
+      projects: [...list, emptyBuilderProject(f.role)],
+    }
+  })
+
+  const updateProject = (index, updates) => setForm((f) => {
+    const list = [...(f.projects || [])]
+    if (!list[index]) return f
+    list[index] = { ...list[index], ...updates }
+    return { ...f, projects: list }
+  })
+
+  const removeProject = (index) => setForm((f) => ({
+    ...f,
+    projects: (f.projects || []).filter((_, i) => i !== index),
+  }))
+
   const reset = () => { setForm(initForm); setStep(1); setGeneratedHTML(null) }
 
   return (
@@ -137,6 +162,7 @@ export function BuilderProvider({ children }) {
       form, updateForm, skipField, unskipField, isSkipped,
       toggleSocial, setSocialUrl, addCustomSocial, removeCustomSocial,
       addSkill, removeSkill, addDesignTool, removeDesignTool,
+      addProject, updateProject, removeProject,
       generatedHTML, setGeneratedHTML,
       isGenerating, setIsGenerating,
       reset,

@@ -4,6 +4,9 @@ import { useNavigate } from 'react-router-dom'
 import { Input, PasswordInput, Select, Alert } from '../../components/UI'
 import { generatePortfolio } from '../../engine/templateEngine'
 import { getThemeById } from '../../templates/registry'
+import { savePortfolioFromForm } from '../../lib/portfolios'
+import { replaceProjectsFromBuilder } from '../../lib/projects'
+import { isSupabaseConfigured } from '../../lib/supabase'
 import { ChevronLeft, Shield, Palette, Sparkles } from 'lucide-react'
 
 const THEMES = [
@@ -15,21 +18,21 @@ const THEMES = [
 
 export default function Step4Finalize({ totalSteps = 4 }) {
   const { form, updateForm, setIsGenerating, setGeneratedHTML, setStep } = useBuilder()
-  const { addToast } = useApp()
+  const { user, addToast } = useApp()
   const navigate = useNavigate()
 
   const u = (k) => (e) => updateForm({ [k]: e.target.value })
-  const isDeveloper = form.role === 'developer'
-  const themeMeta = isDeveloper ? getThemeById('developer', form.selectedTheme) : null
+  const usesThemePicker = form.role === 'developer' || form.role === 'designer'
+  const themeMeta = usesThemePicker ? getThemeById(form.role, form.selectedTheme) : null
 
   const handleGenerate = async () => {
     if (!form.name.trim()) {
       addToast('Please go back and enter your name', 'error')
       return
     }
-    if (isDeveloper && !form.selectedTheme) {
+    if (usesThemePicker && !form.selectedTheme) {
       addToast('Please select a theme first', 'error')
-      setStep(4)
+      setStep(5)
       return
     }
     if (!form.adminPass.trim()) {
@@ -43,7 +46,24 @@ export default function Step4Finalize({ totalSteps = 4 }) {
     try {
       const html = await generatePortfolio(form)
       setGeneratedHTML(html)
-      addToast('Portfolio generated!', 'success')
+
+      if (isSupabaseConfigured && user?.id) {
+        try {
+          const saved = await savePortfolioFromForm(user.id, form)
+          if (saved?.id) {
+            const projectCount = (form.projects || []).filter((p) => p.title?.trim()).length
+            if (projectCount > 0) {
+              await replaceProjectsFromBuilder(saved.id, form.projects, user.id)
+            }
+            sessionStorage.setItem('pf_last_portfolio_id', saved.id)
+          }
+          addToast('Saved! Open Dashboard → Projects tab', 'success')
+        } catch (saveErr) {
+          addToast(saveErr.message || 'Generated but failed to save to database', 'error')
+        }
+      } else {
+        addToast('Portfolio generated!', 'success')
+      }
     } catch (err) {
       addToast(err.message || 'Generation failed', 'error')
       navigate('/builder')
@@ -73,11 +93,14 @@ export default function Step4Finalize({ totalSteps = 4 }) {
         <div className="flex-1 min-w-0">
           <p className="font-semibold text-ink text-sm truncate">{form.name || 'Your Portfolio'}</p>
           <p className="text-xs text-ink-2">
-            {roleLabel[form.role]} · {form.skills?.length || 0} skills
-            {isDeveloper && themeMeta ? ` · ${themeMeta.name} theme` : ''}
+            {roleLabel[form.role]}
+            {form.role === 'developer' ? ` · ${form.skills?.length || 0} skills` : ''}
+            {form.role === 'designer' ? ` · ${form.designTools?.length || 0} tools` : ''}
+            {usesThemePicker && themeMeta ? ` · ${themeMeta.name} theme` : ''}
+            {usesThemePicker ? ` · ${(form.projects || []).filter((p) => p.title?.trim()).length} projects` : ''}
           </p>
         </div>
-        <button type="button" onClick={() => setStep(isDeveloper ? 4 : 1)}
+        <button type="button" onClick={() => setStep(usesThemePicker ? 5 : 1)}
           className="text-xs text-accent-2 hover:text-accent transition underline underline-offset-2 shrink-0">
           Edit
         </button>
@@ -85,7 +108,7 @@ export default function Step4Finalize({ totalSteps = 4 }) {
 
       <div className="flex flex-col gap-4">
 
-        {isDeveloper && themeMeta && (
+        {usesThemePicker && themeMeta && (
           <div className="card-surface rounded-2xl p-5 flex items-center gap-4">
             <div className="w-12 h-12 rounded-xl shrink-0"
               style={{ background: `linear-gradient(135deg, ${themeMeta.colors[0]}, ${themeMeta.colors[1]})` }} />
@@ -93,13 +116,13 @@ export default function Step4Finalize({ totalSteps = 4 }) {
               <p className="text-sm font-semibold text-ink">{themeMeta.name}</p>
               <p className="text-xs text-ink-2">{themeMeta.description}</p>
             </div>
-            <button type="button" onClick={() => setStep(4)} className="btn-ghost text-xs px-3 py-2">
+            <button type="button" onClick={() => setStep(5)} className="btn-ghost text-xs px-3 py-2">
               Change
             </button>
           </div>
         )}
 
-        {!isDeveloper && (
+        {!usesThemePicker && (
           <div className="card-surface rounded-2xl p-5">
             <div className="flex items-center gap-2 mb-4">
               <Palette size={16} className="text-violet-forge" />
@@ -138,7 +161,7 @@ export default function Step4Finalize({ totalSteps = 4 }) {
       <div className="mt-8 rounded-3xl p-6 text-center"
         style={{ background: 'linear-gradient(135deg, rgba(79,140,255,0.08), rgba(167,139,250,0.08))', border: '1px solid rgba(79,140,255,0.2)' }}>
         <p className="text-sm text-ink-2 mb-4">
-          {isDeveloper
+          {usesThemePicker
             ? `Ready to build with the ${themeMeta?.name || 'selected'} theme?`
             : 'Everything looks good? Let\'s build your portfolio.'}
         </p>
@@ -150,7 +173,7 @@ export default function Step4Finalize({ totalSteps = 4 }) {
       </div>
 
       <div className="flex justify-start mt-5">
-        <button type="button" onClick={() => setStep(isDeveloper ? 4 : 3)} className="btn-ghost px-6 py-3 gap-2">
+        <button type="button" onClick={() => setStep(usesThemePicker ? 5 : 3)} className="btn-ghost px-6 py-3 gap-2">
           <ChevronLeft size={16} /> Back
         </button>
       </div>

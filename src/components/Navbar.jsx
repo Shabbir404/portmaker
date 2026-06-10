@@ -15,7 +15,7 @@ const MARKETING_LINKS = [
 const APP_ROUTES = ['/builder', '/dashboard', '/preview']
 
 export default function Navbar() {
-  const { user, logout, setModal } = useApp()
+  const { user, logout } = useApp()
   const navigate = useNavigate()
   const location = useLocation()
   const [menuOpen, setMenuOpen] = useState(false)
@@ -92,10 +92,10 @@ export default function Navbar() {
             </>
           ) : (
             <>
-              <button onClick={() => setModal('login')} className="btn-ghost text-sm px-4 py-2">
+              <button onClick={() => go('/login')} className="btn-ghost text-sm px-4 py-2">
                 Sign in
               </button>
-              <button onClick={() => setModal('signup')} className="btn-gradient text-sm px-4 py-2">
+              <button onClick={() => go('/login?mode=signup')} className="btn-gradient text-sm px-4 py-2">
                 Get started
               </button>
             </>
@@ -143,10 +143,10 @@ export default function Navbar() {
             </>
           ) : (
             <div className="flex flex-col gap-2 mt-4 pt-4 border-t border-white/10">
-              <button onClick={() => { setMenuOpen(false); setModal('login') }} className="btn-ghost w-full py-3">
+              <button onClick={() => go('/login')} className="btn-ghost w-full py-3">
                 Sign in
               </button>
-              <button onClick={() => { setMenuOpen(false); setModal('signup') }} className="btn-gradient w-full py-3">
+              <button onClick={() => go('/login?mode=signup')} className="btn-gradient w-full py-3">
                 Get started free
               </button>
             </div>

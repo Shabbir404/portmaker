@@ -78,8 +78,8 @@ export default function Preview() {
               </h2>
               <p className="text-xs text-ink-3 capitalize">
                 {form.role}
-                {form.role === 'developer' && form.selectedTheme
-                  ? ` · ${getThemeById('developer', form.selectedTheme)?.name || form.selectedTheme} theme`
+                {(form.role === 'developer' || form.role === 'designer') && form.selectedTheme
+                  ? ` · ${getThemeById(form.role, form.selectedTheme)?.name || form.selectedTheme} theme`
                   : form.themePreference ? ` · ${form.themePreference} theme` : ''}
               </p>
             </div>
@@ -158,8 +158,8 @@ export default function Preview() {
             <RotateCcw size={14} /> Build Another
           </button>
           <button onClick={() => navigate('/dashboard')}
-            className="btn-ghost px-5 py-2.5 text-sm gap-2">
-            Dashboard
+            className="btn-primary px-5 py-2.5 text-sm gap-2">
+            Open Admin → Projects
           </button>
           <button onClick={handleDownload}
             className="btn-primary px-6 py-2.5 text-sm gap-2">

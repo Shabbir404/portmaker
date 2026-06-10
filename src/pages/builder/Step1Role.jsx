@@ -67,7 +67,13 @@ export default function Step1Role({ totalSteps = 4 }) {
           <button
             key={r.id}
             type="button"
-            onClick={() => updateForm({ role: r.id, selectedTheme: r.id === 'developer' ? form.selectedTheme : null })}
+            onClick={() => updateForm({
+              role: r.id,
+              projects: form.role === r.id ? form.projects : [],
+              selectedTheme: (r.id === 'developer' || r.id === 'designer') && form.role === r.id
+                ? form.selectedTheme
+                : null,
+            })}
             className={`role-card text-left ${form.role === r.id ? 'selected' : ''}`}
             style={form.role === r.id ? { borderColor: r.color, background: `${r.color}0e`, boxShadow: `0 0 0 3px ${r.color}18` } : {}}
           >

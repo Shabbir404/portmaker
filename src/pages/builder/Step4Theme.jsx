@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 import { useBuilder } from '../../context/BuilderContext'
 
-import { getDeveloperThemes, loadDeveloperThemeHtml } from '../../templates/registry'
+import { getThemesForRole, loadThemeHtml } from '../../templates/registry'
 
 import { ChevronLeft, ChevronRight, Check, Palette, FolderOpen, Maximize2 } from 'lucide-react'
 
@@ -14,7 +14,8 @@ export default function Step4Theme() {
 
   const { form, updateForm, setStep } = useBuilder()
 
-  const themes = getDeveloperThemes()
+  const role = form.role || 'developer'
+  const themes = getThemesForRole(role)
 
   const [preview, setPreview] = useState(null)
 
@@ -28,7 +29,7 @@ export default function Step4Theme() {
 
     if (!form.selectedTheme) return
 
-    setStep(5)
+    setStep(6)
 
   }
 
@@ -58,7 +59,7 @@ export default function Step4Theme() {
 
     try {
 
-      const html = await loadDeveloperThemeHtml(theme.id)
+      const html = await loadThemeHtml(role, theme.id)
 
       setPreviewHtml(html)
 
@@ -98,7 +99,7 @@ export default function Step4Theme() {
 
           <p className="text-ink-2 text-sm mt-2">
 
-            Themes are loaded from <code className="text-accent-2">src/templates/developer/</code> — use{' '}
+            Themes are loaded from <code className="text-accent-2">src/templates/{role}/</code> — use{' '}
 
             <strong className="text-ink">Full preview</strong> to experience each design at full size before you choose.
 
@@ -118,7 +119,7 @@ export default function Step4Theme() {
 
             <p className="text-sm text-ink-2 max-w-md mx-auto leading-relaxed">
 
-              Add a folder like <code className="text-accent-2">src/templates/developer/dev-3d/your-theme.html</code> — any <code className="text-accent-2">.html</code> file in the folder works.
+              Add a folder like <code className="text-accent-2">src/templates/{role}/your-theme/your-theme.html</code> — any <code className="text-accent-2">.html</code> file in the folder works.
 
             </p>
 
@@ -302,7 +303,7 @@ export default function Step4Theme() {
 
         <div className="flex justify-between">
 
-          <button type="button" onClick={() => setStep(3)} className="btn-ghost px-6 py-3 gap-2">
+          <button type="button" onClick={() => setStep(4)} className="btn-ghost px-6 py-3 gap-2">
 
             <ChevronLeft size={16} /> Back
 
